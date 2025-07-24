@@ -11,12 +11,12 @@ export default function HomePage() {
     <Layout>
       <div className="flex flex-col items-center justify-center min-h-[60vh] text-center px-4">
         <h1 className="text-4xl md:text-5xl font-bold text-indigo-600 mb-6">
-          Bienvenido Cleinte a YEOOSTORE
+          Bienvenido estimado CLIENTE a YEOOSTORE
         </h1>
 
         <div className="max-w-2xl mx-auto">
           <p className="text-lg text-gray-700 mb-8">
-            Mira nuestros productos disponibles sin necesidad de registrarte. Simple, rápido y directo.
+            Mira nuestros productos disponibles sin necesidad de registrarte. Simple, rápido y eficiente como nos gusta.
           </p>
         </div>
 
@@ -52,37 +52,7 @@ export default function HomePage() {
         )}
 
         {/* FEATURES */}
-        <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
-          <div className="bg-white p-6 rounded-lg shadow-md border border-gray-100">
-            <div className="text-indigo-500 mb-4 flex justify-center">
-              <TbCheckupList className="text-[3rem]" />
-            </div>
-            <h3 className="text-xl font-semibold mb-2">Fácil de usar</h3>
-            <p className="text-gray-600">
-              Interfaz intuitiva para visualizar productos.
-            </p>
-          </div>
-
-          <div className="bg-white p-6 rounded-lg shadow-md border border-gray-100">
-            <div className="text-indigo-500 mb-4 flex justify-center">
-              <FiClock className="text-[3rem]" />
-            </div>
-            <h3 className="text-xl font-semibold mb-2">Rápido y fluido</h3>
-            <p className="text-gray-600">
-              Carga inmediata sin necesidad de cuenta.
-            </p>
-          </div>
-
-          <div className="bg-white p-6 rounded-lg shadow-md border border-gray-100">
-            <div className="text-indigo-500 mb-4 flex justify-center">
-              <IoMdGlobe className="text-[3rem]" />
-            </div>
-            <h3 className="text-xl font-semibold mb-2">Desde cualquier lugar</h3>
-            <p className="text-gray-600">
-              Acceso público a productos desde cualquier dispositivo.
-            </p>
-          </div>
-        </div>
+        
       </div>
     </Layout>
   );
