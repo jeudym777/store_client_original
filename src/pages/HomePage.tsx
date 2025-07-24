@@ -11,7 +11,7 @@ export default function HomePage() {
     <Layout>
       <div className="flex flex-col items-center justify-center min-h-[60vh] text-center px-4">
         <h1 className="text-4xl md:text-5xl font-bold text-indigo-600 mb-6">
-          Bienvenido a YEOOSTORE
+          Bienvenido Cleinte a YEOOSTORE
         </h1>
 
         <div className="max-w-2xl mx-auto">
