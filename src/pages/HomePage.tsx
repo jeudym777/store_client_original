@@ -1,8 +1,5 @@
 import { useGetPublicProducts } from "@/hooks/useGetPublicProducts";
-import Layout from "./Layout";
-import { IoMdGlobe } from "react-icons/io";
-import { TbCheckupList } from "react-icons/tb";
-import { FiClock } from "react-icons/fi";
+import Layout from "./Layout"; 
 
 export default function HomePage() {
   const { data: products, isLoading } = useGetPublicProducts();
