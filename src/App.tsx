@@ -9,25 +9,27 @@ import { Route } from "react-router-dom";
 import { BrowserRouter } from "react-router-dom";
 import { ProtectedRoute } from "./ProtectedRoute";
 import HomePage from "@/pages/HomePage";
- 
+import ProductDetail from "@/pages/ProductDetail";
+import Gracias from "@/components/Gracias";
+
+
 export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      
+
       <AuthProvider>
         <BrowserRouter>
-          <Routes> 
-
+          <Routes>
             <Route path="/" element={<HomePage />} />
-            <Route path="/login" element={<LoginPage />} /> 
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/producto/:id" element={<ProductDetail />} />
+            <Route path="/gracias" element={<Gracias />} />
 
             <Route element={<ProtectedRoute />}>
- 
               <Route path="/dashboard" element={<DashboardPage />} />
-              
- 
             </Route>
           </Routes>
+
         </BrowserRouter>
 
         <ToastContainer />

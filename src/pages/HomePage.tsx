@@ -1,5 +1,6 @@
 import { useGetPublicProducts } from "@/hooks/useGetPublicProducts";
-import Layout from "./Layout"; 
+import Layout from "./Layout";
+import { Link } from "react-router-dom";
 
 export default function HomePage() {
   const { data: products, isLoading } = useGetPublicProducts();
@@ -25,9 +26,11 @@ export default function HomePage() {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-6xl mt-4">
             {products.map((item: any) => (
-              <div
+              <Link
+                to={`/producto/${item.id}`}
+                target="_blank"
+                className="block border rounded-xl shadow hover:shadow-lg transition duration-300 p-4 bg-white"
                 key={item.id}
-                className="border rounded-xl shadow hover:shadow-lg transition duration-300 p-4 bg-white"
               >
                 <div className="w-full h-48 bg-gray-100 rounded overflow-hidden mb-3">
                   <img
@@ -43,13 +46,14 @@ export default function HomePage() {
                 <p className="text-indigo-700 font-bold mt-2 text-lg">
                   ₡{Number(item.price).toLocaleString("es-CR")}
                 </p>
-              </div>
+              </Link>
             ))}
+
           </div>
         )}
 
         {/* FEATURES */}
-        
+
       </div>
     </Layout>
   );
