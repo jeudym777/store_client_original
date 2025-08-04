@@ -2,7 +2,8 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { supabase } from "@/supabaseClient";
-import { Swiper, SwiperSlide } from "swiper/react"; 
+import { Swiper, SwiperSlide } from "swiper/react";
+import PayPalButton from "@/components/PayPalButton";
 
 type Product = {
   id: number;
@@ -17,6 +18,7 @@ export default function ProductDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [product, setProduct] = useState<Product | null>(null);
+  const [showPayPal, setShowPayPal] = useState(false);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -53,15 +55,23 @@ export default function ProductDetail() {
       <p className="text-lg text-gray-700 mb-2">{product.description}</p>
       <p className="text-xl font-bold text-indigo-600 mb-4">₡{Number(product.price).toLocaleString("es-CR")}</p>
 
-      {product.content_url && (
-        <a
-          href={`/gracias?url=${encodeURIComponent(product.content_url)}`}
-          target="_blank"
+      {!showPayPal ? (
+        <button
+          onClick={() => setShowPayPal(true)}
           className="inline-block bg-green-600 text-white px-6 py-3 rounded hover:bg-green-700 transition"
         >
-          📦 Descargar archivo
-        </a>
+          📦 Comprar y descargar
+        </button>
+      ) : (
+        <div className="mt-4">
+          <PayPalButton
+            price={product.price}
+            description={product.name_product}
+            productId={product.id}
+          />
+        </div>
       )}
+
     </div>
   );
 }
