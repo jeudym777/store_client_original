@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { supabase } from "@/supabaseClient";
+import { supabase } from "../supabaseClient";
 import { toast } from "react-toastify";
 
 export function useDeleteProduct() {

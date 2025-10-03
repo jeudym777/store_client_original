@@ -1,16 +1,16 @@
 import { useForm } from "react-hook-form";
-import { useAuth } from "@/hooks/useAuth";
-import { useGetProducts } from "@/hooks/useGetProducts";
-import { useDeleteProduct } from "@/hooks/useDeleteProduct";
+import { useAuth } from "../hooks/useAuth";
+import { useGetProducts } from "../hooks/useGetProducts";
+import { useDeleteProduct } from "../hooks/useDeleteProduct";
 import { toast } from "react-toastify";
 import Layout from "./Layout";
-import { supabase } from "@/supabaseClient";
+import { supabase } from "../supabaseClient";
 import { useState } from "react";
 
 type ProductFormInput = {
   name_product: string;
   description: string;
-  price: number;
+  price_month: number;
 };
 
 export default function ProductsPage() {
@@ -48,13 +48,13 @@ export default function ProductsPage() {
       return;
     }
 
-    const { name_product, description, price } = formData;
+    const { name_product, description, price_month } = formData;
 
     if (editingProductId) {
       // Actualizar datos del producto
       const { error } = await supabase
         .from("products")
-        .update({ name_product, description, price })
+        .update({ name_product, description, price_month })
         .eq("id", editingProductId);
 
       if (error) {
@@ -101,7 +101,7 @@ export default function ProductsPage() {
       // Crear producto nuevo
       const { data: product, error: errorProduct } = await supabase
         .from("products")
-        .insert([{ name_product, description, price, user_id: user.id }])
+        .insert([{ name_product, description, price_month, user_id: user.id }])
         .select()
         .single();
 
@@ -169,7 +169,7 @@ export default function ProductsPage() {
           <input
             type="number"
             step="0.01"
-            {...register("price", { required: true })}
+            {...register("price_month", { required: true })}
             className="w-full border p-3 rounded"
             placeholder="Precio"
           />
@@ -238,7 +238,7 @@ export default function ProductsPage() {
                 </h3>
                 <p className="text-gray-600 text-sm line-clamp-2">{item.description}</p>
                 <p className="text-indigo-700 font-bold mt-2 text-lg">
-                  ₡{Number(item.price).toLocaleString("es-CR")}
+                  ${Number(item.price_month).toLocaleString("en-US")}
                 </p>
 
                 {/* Miniaturas */}
@@ -263,7 +263,7 @@ export default function ProductsPage() {
                       reset({
                         name_product: item.name_product,
                         description: item.description,
-                        price: item.price,
+                        price_month: item.price_month,
                       });
                       setFiles(null);
                       setPreviewUrls([]);

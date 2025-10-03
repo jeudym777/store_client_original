@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "./useAuth";
-import { supabase } from "@/supabaseClient";
+import { supabase } from "../supabaseClient";
 
 export const useProducts = () => {
   const { user } = useAuth();

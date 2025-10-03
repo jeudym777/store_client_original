@@ -24,7 +24,7 @@ const ProductCard = ({ product }) => {
 
       {/* Precio */}
       <div className="mt-2 font-bold text-indigo-600 text-lg">
-        ₡{product.price.toLocaleString("es-CR")}
+        ${Number(product.price_month).toLocaleString("en-US")}
       </div>
 
       {/* Galería miniatura (opcional) */}

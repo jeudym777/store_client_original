@@ -1,6 +1,6 @@
 // src/pages/Gracias.tsx
 import { useEffect, useState } from "react";
-import { supabase } from "@/supabaseClient";
+import { supabase } from "../supabaseClient";
 
 export default function Gracias() {
   const [url, setUrl] = useState("");

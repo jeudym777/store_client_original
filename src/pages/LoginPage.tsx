@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { supabase } from "@/supabaseClient";
+import { supabase } from "../supabaseClient";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import Layout from "./Layout";

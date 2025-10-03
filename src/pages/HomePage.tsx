@@ -1,4 +1,4 @@
-import { useGetPublicProducts } from "@/hooks/useGetPublicProducts";
+import { useGetPublicProducts } from "../hooks/useGetPublicProducts";
 import Layout from "./Layout";
 import { Link } from "react-router-dom";
 
@@ -44,7 +44,7 @@ export default function HomePage() {
                 </h3>
                 <p className="text-gray-600 text-sm line-clamp-2">{item.description}</p>
                 <p className="text-indigo-700 font-bold mt-2 text-lg">
-                  ₡{Number(item.price).toLocaleString("es-CR")}
+                  ${Number(item.price_month).toLocaleString("en-US")}
                 </p>
               </Link>
             ))}

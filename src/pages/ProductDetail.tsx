@@ -1,15 +1,15 @@
 // src/pages/ProductDetail.tsx
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { supabase } from "@/supabaseClient";
+import { supabase } from "../supabaseClient";
 import { Swiper, SwiperSlide } from "swiper/react";
-import PayPalButton from "@/components/PayPalButton";
+import PayPalButton from "../components/PayPalButton";
 
 type Product = {
   id: number;
   name_product: string;
   description: string;
-  price: number;
+  price_month: number;
   content_url?: string;
   product_images: { image_url: string }[];
 };
@@ -24,7 +24,7 @@ export default function ProductDetail() {
     const fetchProduct = async () => {
       const { data, error } = await supabase
         .from("products")
-        .select("id, name_product, description, price, content_url, product_images(image_url)")
+        .select("id, name_product, description, price_month, content_url, product_images(image_url)")
         .eq("id", id)
         .single();
 
@@ -53,7 +53,7 @@ export default function ProductDetail() {
       </Swiper>
 
       <p className="text-lg text-gray-700 mb-2">{product.description}</p>
-      <p className="text-xl font-bold text-indigo-600 mb-4">₡{Number(product.price).toLocaleString("es-CR")}</p>
+      <p className="text-xl font-bold text-indigo-600 mb-4">${Number(product.price_month).toLocaleString("en-US")}</p>
 
       {!showPayPal ? (
         <button
@@ -65,7 +65,7 @@ export default function ProductDetail() {
       ) : (
         <div className="mt-4">
           <PayPalButton
-            price={product.price}
+            price={product.price_month}
             description={product.name_product}
             productId={product.id}
           />

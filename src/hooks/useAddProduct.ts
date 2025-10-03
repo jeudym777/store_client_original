@@ -1,15 +1,28 @@
 import { useMutation } from "@tanstack/react-query";
 import { useAuth } from "./useAuth";
-import { supabase } from "@/supabaseClient";
+import { supabase } from "../supabaseClient";
 
 export const useAddProduct = () => {
   const { user } = useAuth();
 
-  async function addProduct(newProduct: { name: string; image_url?: string }) {
+  async function addProduct(newProduct: {
+    name_product: string;
+    description?: string;
+    price_month?: number;
+    category?: string;
+    discount?: number;
+    stock?: number;
+    content_url?: string;
+  }) {
     const { error } = await supabase.from("products").insert([
       {
-        name: newProduct.name,
-        image_url: newProduct.image_url ?? "",
+        name_product: newProduct.name_product,
+        description: newProduct.description ?? "",
+        price_month: newProduct.price_month ?? 0,
+        category: newProduct.category ?? "",
+        discount: newProduct.discount ?? 0,
+        stock: newProduct.stock ?? 0,
+        content_url: newProduct.content_url ?? "",
         user_id: user?.id ?? "",
       },
     ]);

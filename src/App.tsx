@@ -1,6 +1,6 @@
-import { AuthProvider } from "@/context/AuthContext";
-import LoginPage from "@/pages/LoginPage";
-import DashboardPage from "@/pages/DashboardPage";
+import { AuthProvider } from "./context/AuthContext";
+import LoginPage from "./pages/LoginPage";
+import DashboardPage from "./pages/DashboardPage";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "./libs/queryClient";
 import { ToastContainer } from "react-toastify";
@@ -8,9 +8,9 @@ import { Routes } from "react-router-dom";
 import { Route } from "react-router-dom";
 import { BrowserRouter } from "react-router-dom";
 import { ProtectedRoute } from "./ProtectedRoute";
-import HomePage from "@/pages/HomePage";
-import ProductDetail from "@/pages/ProductDetail";
-import Gracias from "@/components/Gracias";
+import HomePage from "./pages/HomePage";
+import ProductDetail from "./pages/ProductDetail";
+import Gracias from "./components/Gracias";
 
 
 export default function App() {

@@ -1,6 +1,6 @@
 // src/hooks/useGetProducts.ts
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/supabaseClient";
+import { supabase } from "../supabaseClient";
  
 export async function fetchProducts() {
   const { data, error } = await supabase
@@ -9,7 +9,11 @@ export async function fetchProducts() {
       id,
       name_product,
       description,
-      price,
+      price_month,
+      category,
+      discount,
+      stock,
+      content_url,
       product_images (
         id,
         image_url,
