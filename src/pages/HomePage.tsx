@@ -1,12 +1,20 @@
 import { useGetPublicProducts } from "../hooks/useGetPublicProducts";
+import { useGetProductsByCategory } from "../hooks/useGetProductsByCategory";
+import { useCategory } from "../context/CategoryContext";
 import Layout from "./Layout";
 import { Link } from "react-router-dom";
 import { FiStar, FiShoppingBag, FiTruck, FiShield, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import { useState, useEffect } from 'react';
 
 export default function HomePage() {
-  const { data: products, isLoading } = useGetPublicProducts();
+  const { selectedCategory, setSelectedCategory } = useCategory();
+  const { data: allProducts, isLoading: loadingAll } = useGetPublicProducts();
+  const { data: filteredProducts, isLoading: loadingFiltered } = useGetProductsByCategory(selectedCategory);
   const [currentSlide, setCurrentSlide] = useState(0);
+
+  // Usar productos filtrados si hay una categoría seleccionada, sino todos los productos
+  const products = selectedCategory ? filteredProducts : allProducts;
+  const isLoading = selectedCategory ? loadingFiltered : loadingAll;
 
   const featuredProducts = products?.slice(0, 6) || [];
   
@@ -31,7 +39,7 @@ export default function HomePage() {
   return (
     <Layout>
       {/* HERO SECTION */}
-      <div className="relative bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-800 text-white overflow-hidden">
+      <div className="relative bg-gradient-to-br from-blue-900 via-indigo-900 to-cyan-800 text-white overflow-hidden">
         <div className="absolute inset-0 bg-black/20"></div>
         <div className="relative z-10 max-w-7xl mx-auto px-4 py-20 text-center">
           <div className="animate-fade-in">
@@ -39,7 +47,7 @@ export default function HomePage() {
               YeooLabs Store
             </h1>
             <p className="text-xl md:text-2xl mb-8 text-gray-200 max-w-3xl mx-auto">
-              Descubre productos excepcionales seleccionados especialmente para ti
+              Soluciones de software personalizadas para transformar tu negocio
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <button className="bg-white text-gray-900 px-8 py-4 rounded-full font-semibold hover:bg-gray-100 transition-all transform hover:scale-105">
@@ -74,7 +82,7 @@ export default function HomePage() {
                     <div key={slideIndex} className="w-full flex-shrink-0">
                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-4">
                         {featuredProducts.slice(slideIndex * 3, (slideIndex + 1) * 3).map((item: any) => (
-                          <Link to={`/producto/${item.id}`} target="_blank" key={item.id}>
+                          <Link to={`/producto/${item.id}`} key={item.id}>
                             <div className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 group">
                               <div className="relative overflow-hidden">
                                 <img
@@ -150,30 +158,123 @@ export default function HomePage() {
         </section>
       )}
 
-      {/* CARACTERÍSTICAS */}
+      {/* CATEGORÍAS PRINCIPALES */}
       <section className="py-16 bg-white">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">Nuestras Especialidades</h2>
+            <p className="text-xl text-gray-600">Soluciones tecnológicas personalizadas para cada necesidad</p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div 
+              className="group cursor-pointer"
+              onClick={() => setSelectedCategory('Software Solutions')}
+            >
+              <div className={`bg-gradient-to-br from-blue-50 to-indigo-100 rounded-2xl p-8 text-center hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 ${
+                selectedCategory === 'Software Solutions' ? 'ring-2 ring-blue-500 shadow-xl' : ''
+              }`}>
+                <div className="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-blue-700 transition-colors">
+                  <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+                  </svg>
+                </div>
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">Software Solutions</h3>
+                <p className="text-gray-600 text-sm mb-4">Aplicaciones web y móviles personalizadas</p>
+                <span className="inline-block bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-xs font-medium">
+                  {products?.filter(p => p.category === 'Software Solutions').length || 0} productos
+                </span>
+              </div>
+            </div>
+
+            <div 
+              className="group cursor-pointer"
+              onClick={() => setSelectedCategory('AI Solutions (ML/DL)')}
+            >
+              <div className={`bg-gradient-to-br from-purple-50 to-pink-100 rounded-2xl p-8 text-center hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 ${
+                selectedCategory === 'AI Solutions (ML/DL)' ? 'ring-2 ring-purple-500 shadow-xl' : ''
+              }`}>
+                <div className="w-16 h-16 bg-purple-600 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-purple-700 transition-colors">
+                  <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                  </svg>
+                </div>
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">AI Solutions (ML/DL)</h3>
+                <p className="text-gray-600 text-sm mb-4">Inteligencia artificial y machine learning</p>
+                <span className="inline-block bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-xs font-medium">
+                  {allProducts?.filter(p => p.category === 'AI Solutions (ML/DL)').length || 0} productos
+                </span>
+              </div>
+            </div>
+
+            <div 
+              className="group cursor-pointer"
+              onClick={() => setSelectedCategory('Custom Videogames')}
+            >
+              <div className={`bg-gradient-to-br from-green-50 to-emerald-100 rounded-2xl p-8 text-center hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 ${
+                selectedCategory === 'Custom Videogames' ? 'ring-2 ring-green-500 shadow-xl' : ''
+              }`}>
+                <div className="w-16 h-16 bg-green-600 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-green-700 transition-colors">
+                  <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.828 14.828a4 4 0 01-5.656 0M9 10h1a3 3 0 000-6h-1m0 6V4m0 6h6m-7 10h.01M12 17h.01M17 17h.01" />
+                  </svg>
+                </div>
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">Custom Videogames</h3>
+                <p className="text-gray-600 text-sm mb-4">Videojuegos personalizados y únicos</p>
+                <span className="inline-block bg-green-100 text-green-800 px-3 py-1 rounded-full text-xs font-medium">
+                  {allProducts?.filter(p => p.category === 'Custom Videogames').length || 0} productos
+                </span>
+              </div>
+            </div>
+
+            <div 
+              className="group cursor-pointer"
+              onClick={() => setSelectedCategory('Computer Vision Solutions')}
+            >
+              <div className={`bg-gradient-to-br from-orange-50 to-red-100 rounded-2xl p-8 text-center hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 ${
+                selectedCategory === 'Computer Vision Solutions' ? 'ring-2 ring-orange-500 shadow-xl' : ''
+              }`}>
+                <div className="w-16 h-16 bg-orange-600 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-orange-700 transition-colors">
+                  <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                  </svg>
+                </div>
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">Computer Vision</h3>
+                <p className="text-gray-600 text-sm mb-4">Visión por computadora y reconocimiento</p>
+                <span className="inline-block bg-orange-100 text-orange-800 px-3 py-1 rounded-full text-xs font-medium">
+                  {allProducts?.filter(p => p.category === 'Computer Vision Solutions').length || 0} productos
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* CARACTERÍSTICAS */}
+      <section className="py-16 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="text-center p-6">
               <div className="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <FiTruck className="w-8 h-8 text-indigo-600" />
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">Entrega Rápida</h3>
-              <p className="text-gray-600">Recibe tus productos en tiempo récord con nuestro servicio de entrega express</p>
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">Desarrollo Rápido</h3>
+              <p className="text-gray-600">Entregamos soluciones de software en tiempo récord con metodologías ágiles</p>
             </div>
             <div className="text-center p-6">
               <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <FiShield className="w-8 h-8 text-green-600" />
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">Compra Segura</h3>
-              <p className="text-gray-600">Tus datos y pagos están protegidos con la mejor tecnología de seguridad</p>
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">Código Seguro</h3>
+              <p className="text-gray-600">Desarrollamos con las mejores prácticas de seguridad y calidad de código</p>
             </div>
             <div className="text-center p-6">
               <div className="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <FiStar className="w-8 h-8 text-yellow-600" />
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">Calidad Premium</h3>
-              <p className="text-gray-600">Productos seleccionados cuidadosamente para garantizar la mejor calidad</p>
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">Soporte Premium</h3>
+              <p className="text-gray-600">Soporte técnico completo y actualizaciones constantes para tus proyectos</p>
             </div>
           </div>
         </div>
@@ -202,15 +303,32 @@ export default function HomePage() {
         <section className="py-16 bg-gray-50">
           <div className="max-w-7xl mx-auto px-4">
             <div className="text-center mb-12">
-              <h2 className="text-4xl font-bold text-gray-900 mb-4">Todos Nuestros Productos</h2>
-              <p className="text-xl text-gray-600">Explora nuestra colección completa</p>
+              <h2 className="text-4xl font-bold text-gray-900 mb-4">
+                {selectedCategory ? `${selectedCategory}` : 'Todos Nuestros Productos'}
+              </h2>
+              <p className="text-xl text-gray-600">
+                {selectedCategory 
+                  ? `Productos especializados en ${selectedCategory.toLowerCase()}`
+                  : 'Explora nuestra colección completa'
+                }
+              </p>
+              {selectedCategory && (
+                <button
+                  onClick={() => setSelectedCategory(null)}
+                  className="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-indigo-100 text-indigo-700 rounded-lg hover:bg-indigo-200 transition-colors"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                  Mostrar todos los productos
+                </button>
+              )}
             </div>
             
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {products.map((item: any, index: number) => (
                 <Link
                   to={`/producto/${item.id}`}
-                  target="_blank"
                   key={item.id}
                   className="group"
                   style={{ animationDelay: `${index * 100}ms` }}
