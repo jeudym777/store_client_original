@@ -16,6 +16,18 @@ export default function HomePage() {
   const products = selectedCategory ? filteredProducts : allProducts;
   const isLoading = selectedCategory ? loadingFiltered : loadingAll;
 
+  // Agrupar productos por categoría cuando no hay categoría seleccionada
+  const groupedProducts = !selectedCategory && allProducts 
+    ? allProducts.reduce((acc, product) => {
+        const category = product.category;
+        if (!acc[category]) {
+          acc[category] = [];
+        }
+        acc[category].push(product);
+        return acc;
+      }, {} as Record<string, typeof allProducts>)
+    : null;
+
   const featuredProducts = products?.slice(0, 6) || [];
   
   // Auto-scroll para el carousel
@@ -299,30 +311,26 @@ export default function HomePage() {
             </div>
           </div>
         </section>
-      ) : products && products.length > 0 ? (
+      ) : selectedCategory && products && products.length > 0 ? (
+        // Vista de productos filtrados por categoría específica
         <section className="py-16 bg-gray-50">
           <div className="max-w-7xl mx-auto px-4">
             <div className="text-center mb-12">
               <h2 className="text-4xl font-bold text-gray-900 mb-4">
-                {selectedCategory ? `${selectedCategory}` : 'Todos Nuestros Productos'}
+                {selectedCategory}
               </h2>
               <p className="text-xl text-gray-600">
-                {selectedCategory 
-                  ? `Productos especializados en ${selectedCategory.toLowerCase()}`
-                  : 'Explora nuestra colección completa'
-                }
+                Productos especializados en {selectedCategory.toLowerCase()}
               </p>
-              {selectedCategory && (
-                <button
-                  onClick={() => setSelectedCategory(null)}
-                  className="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-indigo-100 text-indigo-700 rounded-lg hover:bg-indigo-200 transition-colors"
-                >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                  Mostrar todos los productos
-                </button>
-              )}
+              <button
+                onClick={() => setSelectedCategory(null)}
+                className="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-indigo-100 text-indigo-700 rounded-lg hover:bg-indigo-200 transition-colors"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+                Mostrar todos los productos
+              </button>
             </div>
             
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
@@ -366,6 +374,82 @@ export default function HomePage() {
                 </Link>
               ))}
             </div>
+          </div>
+        </section>
+      ) : groupedProducts && Object.keys(groupedProducts).length > 0 ? (
+        // Vista de productos agrupados por categorías (cuando no hay categoría seleccionada)
+        <section className="py-16 bg-gray-50">
+          <div className="max-w-7xl mx-auto px-4">
+            <div className="text-center mb-12">
+              <h2 className="text-4xl font-bold text-gray-900 mb-4">
+                Todos Nuestros Productos
+              </h2>
+              <p className="text-xl text-gray-600">
+                Explora nuestra colección completa organizizada por categorías
+              </p>
+            </div>
+            
+            {Object.entries(groupedProducts).map(([category, categoryProducts]) => (
+              <div key={category} className="mb-16">
+                {/* Subtítulo de categoría */}
+                <div className="flex items-center mb-8">
+                  <div className="flex-grow h-px bg-gradient-to-r from-transparent to-gray-300"></div>
+                  <div className="px-6">
+                    <h3 className="text-2xl font-bold text-gray-900 bg-gray-50 px-4 py-2 rounded-full border-2 border-indigo-200">
+                      {category}
+                    </h3>
+                  </div>
+                  <div className="flex-grow h-px bg-gradient-to-l from-transparent to-gray-300"></div>
+                </div>
+                
+                {/* Grid de productos de la categoría */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                  {categoryProducts.map((item: any, index: number) => (
+                    <Link
+                      to={`/producto/${item.id}`}
+                      key={item.id}
+                      className="group"
+                      style={{ animationDelay: `${index * 100}ms` }}
+                    >
+                      <div className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 animate-fade-in-up">
+                        <div className="relative overflow-hidden">
+                          <img
+                            src={item.product_images?.[0]?.image_url || "/placeholder.jpg"}
+                            alt={item.name_product}
+                            className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+                          />
+                          {item.discount > 0 && (
+                            <div className="absolute top-2 left-2 bg-red-500 text-white px-2 py-1 rounded text-sm font-semibold">
+                              -{item.discount}%
+                            </div>
+                          )}
+                          {/* Badge de categoría */}
+                          <div className="absolute bottom-2 right-2 bg-indigo-600 text-white px-2 py-1 rounded text-xs font-semibold">
+                            {category}
+                          </div>
+                        </div>
+                        <div className="p-4">
+                          <h3 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-1">
+                            {item.name_product}
+                          </h3>
+                          <p className="text-gray-600 text-sm line-clamp-2 mb-3">
+                            {item.description}
+                          </p>
+                          <div className="flex items-center justify-between">
+                            <span className="text-xl font-bold text-indigo-600">
+                              ${Number(item.price_month).toLocaleString("en-US")}
+                            </span>
+                            <span className="text-sm text-gray-500">
+                              Stock: {item.stock}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            ))}
           </div>
         </section>
       ) : (
