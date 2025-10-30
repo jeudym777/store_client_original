@@ -1,10 +1,13 @@
-import { FiMenu, FiX, FiShoppingCart, FiChevronDown } from 'react-icons/fi';
+import { FiMenu, FiX, FiShoppingCart, FiChevronDown, FiUser, FiStar } from 'react-icons/fi';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useCategory } from '../context/CategoryContext';
 import { useGetCategoriesWithCount } from '../hooks/useGetProductsByCategory';
 import { CartSidebar } from '../components/CartSidebar';
+import { useCustomerAuth } from '../context/CustomerAuthContext';
+import { useCustomerPointsSummary } from '../hooks/useCustomerPoints';
+import CustomerAuthModal from '../components/CustomerAuthModal';
 import yeoobackground from '../ImagenesYeooLABS/YEOO.png';
 
 // Componente del dropdown de categorías
@@ -85,9 +88,25 @@ const CategoryDropdown = () => {
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [authModalTab, setAuthModalTab] = useState<'login' | 'register'>('login');
+  const [showUserMenu, setShowUserMenu] = useState(false);
+  
   const { getCartCount, openCart } = useCart();
+  const { user, profile, isCustomer } = useCustomerAuth();
+  const { data: pointsSummary } = useCustomerPointsSummary();
 
   const cartCount = getCartCount();
+
+  const openLoginModal = () => {
+    setAuthModalTab('login');
+    setIsAuthModalOpen(true);
+  };
+
+  const openRegisterModal = () => {
+    setAuthModalTab('register');
+    setIsAuthModalOpen(true);
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -109,6 +128,75 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 Inicio
               </Link>
               <CategoryDropdown />
+              
+              {/* Customer Auth Section */}
+              {isCustomer ? (
+                <div className="relative">
+                  <button
+                    onClick={() => setShowUserMenu(!showUserMenu)}
+                    className="flex items-center space-x-2 text-gray-700 hover:text-indigo-600 transition-colors"
+                  >
+                    <div className="w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center">
+                      <FiUser className="w-4 h-4 text-indigo-600" />
+                    </div>
+                    <div className="text-left">
+                      <p className="text-sm font-medium">{profile?.first_name}</p>
+                      <div className="flex items-center text-xs text-indigo-600">
+                        <FiStar className="w-3 h-3 mr-1" />
+                        {pointsSummary?.current_balance || 0} pts
+                      </div>
+                    </div>
+                    <FiChevronDown className="w-4 h-4" />
+                  </button>
+                  
+                  {showUserMenu && (
+                    <>
+                      <div className="fixed inset-0 z-10" onClick={() => setShowUserMenu(false)} />
+                      <div className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-200 z-20">
+                        <div className="p-4 border-b border-gray-200">
+                          <p className="font-medium text-gray-900">{profile?.first_name} {profile?.last_name}</p>
+                          <p className="text-sm text-gray-500">{user?.email}</p>
+                          <div className="flex items-center mt-1 text-sm text-indigo-600">
+                            <FiStar className="w-4 h-4 mr-1" />
+                            {pointsSummary?.current_balance || 0} puntos disponibles
+                          </div>
+                        </div>
+                        <div className="py-2">
+                          <Link
+                            to="/perfil"
+                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                            onClick={() => setShowUserMenu(false)}
+                          >
+                            Mi Perfil
+                          </Link>
+                          <Link
+                            to="/mis-puntos"
+                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                            onClick={() => setShowUserMenu(false)}
+                          >
+                            Mis Puntos
+                          </Link>
+                        </div>
+                      </div>
+                    </>
+                  )}
+                </div>
+              ) : (
+                <div className="flex items-center space-x-4">
+                  <button
+                    onClick={openLoginModal}
+                    className="text-gray-700 hover:text-indigo-600 transition-colors font-medium"
+                  >
+                    Iniciar Sesión
+                  </button>
+                  <button
+                    onClick={openRegisterModal}
+                    className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors font-medium"
+                  >
+                    Registrarse
+                  </button>
+                </div>
+              )}
             </div>
 
             {/* Mobile menu button */}
@@ -149,6 +237,61 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                       Computer Vision
                     </button>
                   </div>
+                </div>
+
+                {/* Auth Section Mobile */}
+                <div className="pt-4 border-t border-gray-200">
+                  {isCustomer ? (
+                    <div className="space-y-3">
+                      <div className="flex items-center space-x-3 p-3 bg-indigo-50 rounded-lg">
+                        <div className="w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center">
+                          <FiUser className="w-5 h-5 text-indigo-600" />
+                        </div>
+                        <div className="flex-1">
+                          <p className="font-medium text-gray-900">{profile?.first_name}</p>
+                          <div className="flex items-center text-sm text-indigo-600">
+                            <FiStar className="w-4 h-4 mr-1" />
+                            {pointsSummary?.current_balance || 0} puntos
+                          </div>
+                        </div>
+                      </div>
+                      <Link
+                        to="/perfil"
+                        className="block text-gray-700 hover:text-indigo-600 transition-colors pl-3"
+                        onClick={() => setIsMenuOpen(false)}
+                      >
+                        Mi Perfil
+                      </Link>
+                      <Link
+                        to="/mis-puntos"
+                        className="block text-gray-700 hover:text-indigo-600 transition-colors pl-3"
+                        onClick={() => setIsMenuOpen(false)}
+                      >
+                        Mis Puntos
+                      </Link>
+                    </div>
+                  ) : (
+                    <div className="space-y-3">
+                      <button
+                        onClick={() => {
+                          openLoginModal();
+                          setIsMenuOpen(false);
+                        }}
+                        className="block w-full text-left text-gray-700 hover:text-indigo-600 transition-colors pl-3 font-medium"
+                      >
+                        Iniciar Sesión
+                      </button>
+                      <button
+                        onClick={() => {
+                          openRegisterModal();
+                          setIsMenuOpen(false);
+                        }}
+                        className="block w-full text-left bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors font-medium"
+                      >
+                        Registrarse
+                      </button>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -218,6 +361,13 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
       {/* CARRITO LATERAL */}
       <CartSidebar />
+
+      {/* MODAL DE AUTENTICACIÓN */}
+      <CustomerAuthModal 
+        isOpen={isAuthModalOpen}
+        onClose={() => setIsAuthModalOpen(false)}
+        defaultTab={authModalTab}
+      />
     </div>
   );
 }

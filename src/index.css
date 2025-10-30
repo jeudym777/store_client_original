@@ -113,3 +113,6 @@ html {
     opacity: .5;
   }
 }
+
+/* React Toastify Styles */
+@import 'react-toastify/dist/ReactToastify.css';
